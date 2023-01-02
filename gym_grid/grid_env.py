@@ -38,7 +38,7 @@ class GridEnv:
         self.wall_coordinates_X = []
         self.wall_coordinates_Y = []
         self.Astar = controlAstar
-        self.goal = 0
+        self.goal = 100
 
 
     def getMap(self):

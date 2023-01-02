@@ -29,7 +29,7 @@ class Player:
         if ID == "N":
             return False
         else:
-            self.reward = 5
+            self.reward = 0.5
             return True
 
     def moveDown(self, half=False):

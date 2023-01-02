@@ -13,7 +13,7 @@ def train():
     os.environ["WANDB_API_KEY"] = "48454db87872b0da16c749491c7e362e5933ceee"
     user = "calisircihan21"
     project = "XPlane11"
-    display_name = "Astar&RL_Training_PPO_3"
+    display_name = "Astar&RL_Training_PPO_4"
     wandb.init(entity=user, project=project, name=display_name)
     print("============================================================================================")
     has_continuous_action_space = False  # continuous action space; else discrete
