@@ -37,6 +37,7 @@ class GridEnv:
         self.randomWalls = randomWalls
         self.wall_coordinates_X = []
         self.wall_coordinates_Y = []
+        self.Astar = False
 
 
     def getMap(self):
@@ -106,13 +107,14 @@ class GridEnv:
                 self.getWalls()
                 # A* algorithm to control env has a solution
                 # ---- A* --------------
-                out = runAstar()
-                while not out: # out is False means there is no solution for this map conditions, continue if has a solutuion
-                    self.gridMap = []
-                    self.getMap()
-                    self.walls = []
-                    self.getWalls()
+                if self.Astar:
                     out = runAstar()
+                    while not out: # out is False means there is no solution for this map conditions, continue if has a solutuion
+                        self.gridMap = []
+                        self.getMap()
+                        self.walls = []
+                        self.getWalls()
+                        out = runAstar()
                 # ----------------------
         _initialize()
         self.reset_timer += 1
@@ -215,7 +217,7 @@ class GridEnv:
         self.draw_walls()
         # draw_target()
         pygame.display.flip()
-        time.sleep(0.01)
+        time.sleep(0.001)
 
     def close(self):
         pygame.quit()

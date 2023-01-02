@@ -40,9 +40,11 @@ class Player:
                 if not self.controlWall(target_x, target_y):
                     self.y += 1
                     self.top -= 16
-            elif half and (not self.x == self.x_limit and not self.x == 1): # çarpraz aksiyonsa duvar olsa da yap
+                    self.on_y_limit = False
+            elif half and (not self.x == self.x_limit and not self.x == 1): # çarpraz aksiyonsa duvar olsa da hareket eder
                 self.y += 1
                 self.top -= 16
+                self.on_y_limit = False
         else:
             self.on_y_limit = True
 
@@ -68,11 +70,11 @@ class Player:
             target_x = self.x + 1
             target_y = self.y
 
-            if not self.controlWall(target_x, target_y) and not self.on_y_limit:
+            if not self.controlWall(target_x, target_y) and not self.on_y_limit and not half:
                 self.x += 1
                 self.left += 16
 
-            elif self.controlWall(target_x, target_y) and not half:
+            elif not self.controlWall(target_x, target_y) and not self.on_y_limit and half:
                 self.x += 1
                 self.left += 16
 
@@ -89,11 +91,11 @@ class Player:
             target_x = self.x - 1
             target_y = self.y
 
-            if not self.controlWall(target_x, target_y) and not self.on_y_limit:
+            if not self.controlWall(target_x, target_y) and not self.on_y_limit and not half:
                 self.x -= 1
                 self.left -= 16
 
-            elif self.controlWall(target_x, target_y) and not half:
+            elif not self.controlWall(target_x, target_y) and not self.on_y_limit and half:
                 self.x -= 1
                 self.left -= 16
 
