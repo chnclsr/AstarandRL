@@ -38,7 +38,7 @@ class GridEnv:
         self.wall_coordinates_X = []
         self.wall_coordinates_Y = []
         self.Astar = controlAstar
-        self.goal = 100
+        self.goal = 0
 
 
     def getMap(self):
@@ -80,7 +80,7 @@ class GridEnv:
         done = False
         if self.player.x == self.target.x and self.player.y == self.target.y:
             done = True
-            self.goal = 10
+            self.goal = 100
         return done
 
     def step(self, action):
