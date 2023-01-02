@@ -1,7 +1,9 @@
-# Kurulum
+# A* and RL gym grid ortamı
+
+2 boyutta tasarlanan grid üzerinde, bloklara çarpmadan hedef noktaya gidebilmek için rota planlama algoritmalarından A* ve RL metotlarından PPO karşılaştırılmıştır.
 
 
-# Gereklilikler
+##### Gereklilikler
 > CUDA 10.2 \
 > Python 3.8 \
 
