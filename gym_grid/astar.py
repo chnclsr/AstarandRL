@@ -85,7 +85,7 @@ openSet.append(start)
 import json
 
 def json2list(name):
-    with open("../data/coordinates_{}.json".format(name), "r") as fp:
+    with open("../gym_grid/data/coordinates_{}.json".format(name), "r") as fp:
         data = json.load(fp)
         return data
 

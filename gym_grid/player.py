@@ -29,7 +29,7 @@ class Player:
         if ID == "N":
             return False
         else:
-            print("! wall")
+            self.reward = 5
             return True
 
     def moveDown(self, half=False):

@@ -57,33 +57,29 @@ class ActorCritic(nn.Module):
                         )
         else:
             self.actor = nn.Sequential(
-                            nn.Conv2d(in_channels=1, out_channels=3, kernel_size=(3, 3), padding=1),
+                            nn.Conv2d(in_channels=1, out_channels=1, kernel_size=(3, 3), padding=0),
                             nn.ReLU(),
                             nn.MaxPool2d((2, 2)),
 
-                            nn.Conv2d(in_channels=3, out_channels=2, kernel_size=(3, 3), padding=1),
-                            nn.ReLU(),
-                            nn.MaxPool2d((2, 2)),
+                            # nn.Conv2d(in_channels=3, out_channels=2, kernel_size=(3, 3), padding=1),
+                            # nn.ReLU(),
+                            # nn.MaxPool2d((2, 2)),
 
                             nn.Flatten(),
-                            nn.Linear(64, 64),
-                            nn.Tanh(),
-                            nn.Linear(64, action_dim),
+                            nn.Linear(630, action_dim),
                         )
         # critic
         self.critic = nn.Sequential(
-                        nn.Conv2d(in_channels=1, out_channels=3, kernel_size=(3, 3), padding=1),
+                        nn.Conv2d(in_channels=1, out_channels=1, kernel_size=(3, 3), padding=0),
                         nn.ReLU(),
                         nn.MaxPool2d((2, 2)),
 
-                        nn.Conv2d(in_channels=3, out_channels=2, kernel_size=(3, 3), padding=1),
-                        nn.ReLU(),
-                        nn.MaxPool2d((2, 2)),
+                        # nn.Conv2d(in_channels=3, out_channels=2, kernel_size=(3, 3), padding=1),
+                        # nn.ReLU(),
+                        # nn.MaxPool2d((2, 2)),
 
                         nn.Flatten(),
-                        nn.Linear(64, 64),
-                        nn.Tanh(),
-                        nn.Linear(64, 1)
+                        nn.Linear(630, 1)
                     )
         
     def set_action_std(self, new_action_std):
@@ -103,12 +99,12 @@ class ActorCritic(nn.Module):
             cov_mat = torch.diag(self.action_var).unsqueeze(dim=0)
             dist = MultivariateNormal(action_mean, cov_mat)
         else:
-            state = state
+
             out = self.actor(state)
-            heading_action_probs = torch.nn.Softmax(dim=-1)(torch.nn.Linear(64, self.multiDisActionNums[0].n)(out))
+            action_probs = torch.nn.Softmax(dim=-1)(out)
             # rudder_action = Categorical(torch.nn.Softmax(dim=-1)(torch.nn.Linear(64, self.multiDisActionNums[0].n)(out)))
             # speed_action = Categorical(torch.nn.Softmax(dim=-1)(torch.nn.Linear(64, self.multiDisActionNums[0].n)(out)))
-            dist = Categorical(heading_action_probs)
+            dist = Categorical(action_probs)
 
         action = dist.sample()
         action_logprob = dist.log_prob(action)
@@ -128,12 +124,13 @@ class ActorCritic(nn.Module):
             if self.action_dim == 1:
                 action = action.reshape(-1, self.action_dim)
         else:
-            action_probs = self.actor(state)
-            action_probs = torch.nn.Softmax(dim=-1)(torch.nn.Linear(64, self.multiDisActionNums[0].n)(action_probs))
+            s = state.reshape(state.shape[0], 1, state.shape[1], state.shape[2])
+            action_probs = self.actor(s)
+            action_probs = torch.nn.Softmax(dim=-1)(action_probs)
             dist = Categorical(action_probs)
         action_logprobs = dist.log_prob(action)
         dist_entropy = dist.entropy()
-        state_values = self.critic(state)
+        state_values = self.critic(s)
         
         return action_logprobs, state_values, dist_entropy
 
@@ -204,6 +201,7 @@ class PPO:
         else:
             with torch.no_grad():
                 state = torch.FloatTensor(state).to(device)
+                state = state.reshape([1, state.shape[0], state.shape[1]])
                 action, action_logprob = self.policy_old.act(state)
             
             self.buffer.states.append(state)

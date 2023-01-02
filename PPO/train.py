@@ -8,12 +8,12 @@ from gym_grid.grid_env import GridEnv
 
 ################################### Training ###################################
 def train():
-    print("initialize Wandb")
+    # print("initialize Wandb")
     os.environ["WANDB_MODE"] = "online"
     os.environ["WANDB_API_KEY"] = "48454db87872b0da16c749491c7e362e5933ceee"
     user = "calisircihan21"
     project = "XPlane11"
-    display_name = "Astar&RL_Training_PPO_1"
+    display_name = "Astar&RL_Training_PPO_3"
     wandb.init(entity=user, project=project, name=display_name)
     print("============================================================================================")
     has_continuous_action_space = False  # continuous action space; else discrete
@@ -39,7 +39,7 @@ def train():
     # state shape = 73 * 38 # continuous
     # action: 8 # Multidiscrete
     env_name = "Astar-RL"
-    env = GridEnv(randomWalls=True, timeStep=250)
+    env = GridEnv(randomWalls=False, timeStep=250)
     state_dim = 73 * 38
 
     # action space dimension
@@ -109,10 +109,11 @@ def train():
         timestep = 0
         done = False
         while not done:
-            print("episode: {} timestep: {} update num: {}".format(i_episode, timestep, time_step//update_timestep))
+            # print("episode: {} timestep: {} update num: {}".format(i_episode, timestep, time_step//update_timestep))
             # select action with policy
             action = ppo_agent.select_action(state)
             state, reward, done, _ = env.step(action)
+            env.render()
             # saving reward and is_terminals
             ppo_agent.buffer.rewards.append(reward)
             ppo_agent.buffer.is_terminals.append(done)
@@ -137,6 +138,9 @@ def train():
             #     print("--------------------------------------------------------------------------------------------")
 
             # break; if the episode is over
+            if done:
+                print(print_running_episodes, timestep, done)
+                break
 
         episodeRewards.append(current_ep_reward)
         print_running_reward += current_ep_reward

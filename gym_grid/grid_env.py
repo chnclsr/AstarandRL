@@ -12,7 +12,7 @@ from .player import Player
 from .objects import Wall, IDMap, Target
 
 class GridEnv:
-    def __init__(self, timeStep=100, randomWalls=False):
+    def __init__(self, timeStep=100, randomWalls=False, controlAstar=False):
         pygame.init()
         self.w = ScreenW
         self.h = ScreenH
@@ -24,8 +24,8 @@ class GridEnv:
         self.width = grid_width
         self.height = grid_height
         self.screen = None
-        self.action_space = 9
-        self.observartion_space = 10
+        self.action_space = 8
+        self.observartion_space = (self.x_limit, self.y_limit)
         self.player = None
         self.target = None
         self.walls = []
@@ -37,7 +37,8 @@ class GridEnv:
         self.randomWalls = randomWalls
         self.wall_coordinates_X = []
         self.wall_coordinates_Y = []
-        self.Astar = False
+        self.Astar = controlAstar
+        self.goal = 0
 
 
     def getMap(self):
@@ -68,23 +69,30 @@ class GridEnv:
             # print(distanceReward, curr_distance, pre_distance)
             return distanceReward
         reward = 0
-        reward += self.player.reward
+        reward += self.goal
+        reward -= self.player.reward
         reward += calDistanceReward()
-        reward -= 0 # timestep
-
+        reward -= 0.01 # timestep
         return reward
 
+
+    def getTerminate(self):
+        done = False
+        if self.player.x == self.target.x and self.player.y == self.target.y:
+            done = True
+            self.goal = 10
+        return done
 
     def step(self, action):
         self.pre_x = self.player.x
         self.pre_y = self.player.y
         self.player.move(str(action))
-        done = False
+        done = self.getTerminate()
         state = self.getState()
         info = None
         reward = self.getReward()
         self.timeStep += 1
-        print("timestep {}".format(self.timeStep))
+        # print("timestep {}".format(self.timeStep))
 
         if self.timeStep == self.timeStepLimit:
             done = True
@@ -94,6 +102,7 @@ class GridEnv:
         def _initialize():
             self.gameExit = False
             self.timeStep = 0
+            self.goal = 0
             self.screen = pygame.display.set_mode((self.w, self.h))
             self.player = None
             self.getPlayer()  # get agent
