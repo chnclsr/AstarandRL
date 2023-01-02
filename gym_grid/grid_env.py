@@ -166,11 +166,11 @@ class GridEnv:
 
 
     def list2json(self, data, name):
-        with open("../data/coordinates_{}.json".format(name), "w") as fp:
+        with open("../gym_grid/data/coordinates_{}.json".format(name), "w") as fp:
             json.dump(data, fp)
 
     def json2list(self, name):
-        with open("../data/coordinates_{}.json".format(name), "r") as fp:
+        with open("../gym_grid/data/coordinates_{}.json".format(name), "r") as fp:
             data = json.load(fp)
             return data
 
