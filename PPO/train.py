@@ -10,8 +10,8 @@ from gym_grid.grid_env import GridEnv
 def train():
     # print("initialize Wandb")
     os.environ["WANDB_MODE"] = "online"
-    os.environ["WANDB_API_KEY"] = "48454db87872b0da16c749491c7e362e5933ceee"
-    user = "calisircihan21"
+    os.environ["WANDB_API_KEY"] = "cc"
+    user = "cc"
     project = "XPlane11"
     display_name = "Astar&RL_Training_PPO_6"
     wandb.init(entity=user, project=project, name=display_name)
